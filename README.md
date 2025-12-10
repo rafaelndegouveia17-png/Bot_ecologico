@@ -29,7 +29,7 @@ random → Para selecionar dicas e perguntas aleatórias.
 Clone este repositório:
 
 bash
-git clone https://github.com/seu-usuario/bot-reciclagem.git
+git clone https://github.com/rafaelndegouveia17-png/Bot_ecologico/blob/main/Bot.py
 cd bot-reciclagem
 Instale as dependências:
 

@@ -1,5 +1,6 @@
 import discord
 import random
+import asyncio
 # A variável intents armazena as permissões do bot
 intents = discord.Intents.default()
 # Ativar a permissão para ler o conteúdo das mensagens
@@ -74,11 +75,49 @@ async def on_message(message):
         funcoes = """Comandos disponíveis:  
         $dicas_agua - Receba dicas para economizar água.  
         $cor das lixeiras - Saiba a cor das lixeiras de reciclagem.
-        $dicas_reciclagem - Receba dicas para reciclar melhor."""
+        $dicas_reciclagem - Receba dicas para reciclar melhor.
+        $tempo_decompor - Descubra o tempo de decomposição de diferentes materiais.
+        $jogo_recilagem - Jogue um quiz sobre reciclagem.
+        """
         
         await message.channel.send(funcoes)
+    elif message.content.startswith('$jogo_recilagem'):
+        perguntas = {
+            "Qual material deve ser colocado na lixeira azul?": "papel",
+            "Qual material deve ser colocado na lixeira verde?": "vidro",
+            "Qual material deve ser colocado na lixeira amarela?": "metal",
+            "Qual material deve ser colocado na lixeira vermelha?": "plástico",
+            "Qual material deve ser colocado na lixeira cinza?": "não reciclável",
+            "Quanto tempo leva para o papel se decompor?": "1 a 4 meses",
+            "Quanto tempo leva para uma lata de alumínio se decompor?": "100 a 500 anos",
+            "Quanto tempo leva para uma garrafa plástica se decompor?": "200 a 450 anos",
+            "Quanto tempo leva para o vidro se decompor?": "tempo indeterminado",
+            "Qual é o destino correto das pilhas usadas?": "pontos de coleta específicos",
+            "Qual é o destino correto dos eletrônicos antigos?": "centros de reciclagem especializados",
+            "Qual é o destino correto do óleo de cozinha usado?": "pontos de coleta para reaproveitamento",
+            "Qual é o destino correto das roupas em bom estado?": "doação",
+            "Qual é o destino correto dos restos de comida?": "compostagem",
+            "Qual é o destino correto dos medicamentos vencidos?": "farmácias e postos de coleta autorizados",
+            "Qual material deve ser colocado na lixeira marrom?": "orgânico"
+            }
+        pergunta, resposta_correta = random.choice(list(perguntas.items()))
+        await message.channel.send(pergunta)
+
+        def check(m):
+            return m.author == message.author and m.channel == message.channel
+
+        try:
+            resposta = await client.wait_for('message', check=check, timeout=30.0)
+        except asyncio.TimeoutError:
+            await message.channel.send(f"Tempo esgotado! A resposta correta era: {resposta_correta}.")
+            return
+
+        if resposta.content.lower() == resposta_correta:
+            await message.channel.send("Resposta correta! Parabéns!")
+        else:
+            await message.channel.send(f"Resposta incorreta. A resposta correta era: {resposta_correta}.")
     else:
         await message.channel.send("Comando não reconhecido. Use $funçoes para ver a lista de comandos disponíveis.")
 
-client.run("YOUR_BOT_TOKEN")
+client.run("")
         
